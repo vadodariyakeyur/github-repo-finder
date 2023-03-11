@@ -87,6 +87,7 @@ function RepositorySearch() {
                 description={item.description}
                 language={item.language}
                 stars={item.stargazers_count}
+                url={item.html_url}
               />
             ))}
           </Styles.RepositoryList>

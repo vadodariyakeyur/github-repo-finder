@@ -11,7 +11,10 @@ const H1 = styled.h1`
 `;
 
 const Input = styled.input`
-  padding: 0.5rem;
+  display: block;
+  width: 50%;
+  padding: 10px;
+  font-size: 20px;
   border-radius: 6px;
   border: none;
   background-color: var(--secondary-color);

@@ -4,4 +4,5 @@ export type RepositoryInfoProps = {
   stars: number;
   description: string;
   language: string;
+  url: string;
 };
