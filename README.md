@@ -7,15 +7,15 @@ To run this application, you will need Node.js and npm/yarn installed on your co
 
 ```
 cd github-repo-finder
-npm install
-npm run dev
+yarn install
+yarn run dev
 ```
 
-This will start the application in development mode on http://localhost:4173.
+This will start the application in development mode on http://localhost:5173.
 
 To build the application for production, run:
 ```
-npm run build
+yarn run build
 ```
 
 ## Features
