@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useDebounce = <T>(value: T, timeout = 300) => {
+const useDebounce = <T>(value: T, timeout = 300) => {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
   const dataTimerRef = useRef<number>();
 
@@ -13,3 +13,5 @@ export const useDebounce = <T>(value: T, timeout = 300) => {
 
   return debouncedValue;
 };
+
+export default useDebounce;

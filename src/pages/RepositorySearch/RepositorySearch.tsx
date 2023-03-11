@@ -1,97 +1,57 @@
-import { useCallback, useState } from "react";
-import { useQuery } from "react-query";
+import React, { useMemo, useState } from "react";
 
 import Styles from "./RepositorySearch.styles";
-import { searchRepos } from "../../api/searchRepos/searchRepos";
-import { RepositoryInfo } from "../../components/RepositoryInfo/RepositoryInfo";
-import { useDebounce } from "../../hooks/useDebounce";
-import {
-  OrderByOptionsType,
-  SortOptionsType,
-} from "../../api/searchRepos/searchRepos.types";
+import InformationCard from "../../components/InformationCard/InformationCard";
+import Operations from "../../components/Operations/Operations";
+import useDebounce from "../../hooks/useDebounce/useDebounce";
+import useRepositorySearch from "../../hooks/useRepositorySearch/useRepositorySearch";
+import { QueryType } from "../../hooks/useRepositorySearch/useRepositorySearch.types";
 import SpinnerImage from "../../assets/images/spinner.gif";
 
 function RepositorySearch() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortValue, setSortValue] = useState<SortOptionsType>("stars");
-  const [orderByValue, setOrderByValue] = useState<OrderByOptionsType>("desc");
-  const debouncedSearchQuery = useDebounce(searchQuery);
+  const [query, setQuery] = useState<QueryType>({
+    search: "",
+    sort: "stars",
+    order: "desc",
+  });
 
-  const { isLoading, data } = useQuery(
-    ["repositories", debouncedSearchQuery, sortValue, orderByValue],
-    () => searchRepos(debouncedSearchQuery, sortValue, orderByValue),
-    {
-      enabled: !!debouncedSearchQuery,
-      refetchOnWindowFocus: false,
+  const debouncedQuery = useDebounce(query);
+  const { isLoading, isError, data } = useRepositorySearch(debouncedQuery);
+
+  const displayData = useMemo(() => {
+    if (query.search === "") {
+      return <Styles.Message>Start Searching...</Styles.Message>;
     }
-  );
 
-  const handleSearchChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
-    },
-    []
-  );
+    if (isLoading) return <Styles.Spinner src={SpinnerImage} />;
 
-  const handleSortChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSortValue(event.target.value as SortOptionsType);
-    },
-    []
-  );
+    if (isError) {
+      return (
+        <Styles.Message>
+          Something went wrong. Please try again...
+        </Styles.Message>
+      );
+    }
 
-  const handleOrderChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setOrderByValue(event.target.value as OrderByOptionsType);
-    },
-    []
-  );
+    if (data?.data.total_count === 0) {
+      return <Styles.Message>No records found</Styles.Message>;
+    }
+
+    return (
+      <Styles.RepositoryList>
+        {data?.data.items.map((item) => (
+          <InformationCard key={item.id} item={item} />
+        ))}
+      </Styles.RepositoryList>
+    );
+  }, [isLoading, isError, query.search, data]);
 
   return (
     <main>
       <Styles.Container>
-        <Styles.H1>Repositories</Styles.H1>
-        <Styles.Input
-          type="text"
-          placeholder="Search..."
-          autoFocus
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-        <Styles.SortContainer>
-          <span>Sort by: &nbsp;</span>
-          <Styles.Select value={sortValue} onChange={handleSortChange}>
-            <option value="stars">Stars</option>
-            <option value="watchers">Watchers</option>
-            <option value="score">Score</option>
-            <option value="name">Name</option>
-            <option value="created">Created</option>
-            <option value="updated">Updated</option>
-          </Styles.Select>
-          &nbsp;&nbsp;&nbsp;
-          <span>Order by: &nbsp;</span>
-          <Styles.Select value={orderByValue} onChange={handleOrderChange}>
-            <option value="asc">ASC</option>
-            <option value="desc">DESC</option>
-          </Styles.Select>
-        </Styles.SortContainer>
-        {isLoading ? (
-          <Styles.Spinner src={SpinnerImage} />
-        ) : (
-          <Styles.RepositoryList>
-            {data?.data.items.map((item) => (
-              <RepositoryInfo
-                key={item.id}
-                avatar={item.owner.avatar_url}
-                name={item.name}
-                description={item.description}
-                language={item.language}
-                stars={item.stargazers_count}
-                url={item.html_url}
-              />
-            ))}
-          </Styles.RepositoryList>
-        )}
+        <Styles.Heading>Repositories</Styles.Heading>
+        <Operations query={query} setQuery={setQuery} />
+        {displayData}
       </Styles.Container>
     </main>
   );

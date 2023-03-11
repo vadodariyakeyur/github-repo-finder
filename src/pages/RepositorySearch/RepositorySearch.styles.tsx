@@ -5,40 +5,21 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 
-const H1 = styled.h1`
+const Heading = styled.h1`
   font-size: 2.5rem;
   margin-top: 2rem;
-`;
-
-const Input = styled.input`
-  display: block;
-  width: 50%;
-  padding: 10px;
-  font-size: 20px;
-  border-radius: 6px;
-  border: none;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
-`;
-
-const SortContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-`;
-
-const Select = styled.select`
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: none;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
 `;
 
 const Spinner = styled.img`
   display: block;
   width: 220px;
   margin: 0 auto;
+`;
+
+const Message = styled.div`
+  font-size: 1.5rem;
+  margin-top: 10rem;
+  text-align: center;
 `;
 
 const RepositoryList = styled.div`
@@ -50,10 +31,8 @@ const RepositoryList = styled.div`
 
 export default {
   Container,
-  H1,
-  Input,
-  SortContainer,
+  Heading,
+  Message,
   Spinner,
-  Select,
   RepositoryList,
 };

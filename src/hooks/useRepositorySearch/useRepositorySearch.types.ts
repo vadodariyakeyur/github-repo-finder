@@ -8,7 +8,13 @@ export type SortOptionsType =
 
 export type OrderByOptionsType = "asc" | "desc";
 
-type ItemType = {
+export type QueryType = {
+  search: string;
+  sort: SortOptionsType;
+  order: OrderByOptionsType;
+};
+
+export type ItemType = {
   id: number;
   owner: {
     avatar_url: string;
